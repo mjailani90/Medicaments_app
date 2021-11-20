@@ -68,6 +68,22 @@ def main():
 
 # db.init_app(app)
 
+@app.route('/item/')
+def item():
+    pass
+
+
+@app.route('/company/')
+def allcompany():
+    pass
+
+
+@app.route('/admin/')
+def admin():
+    pass
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
