@@ -88,12 +88,7 @@ def create_table():
 def main():
     sql = text('SELECT * FROM  company ORDER BY random() LIMIT 6;')
     companies = db.engine.execute(sql)
-
-    # print(cons[0].connectionString)
-    # for con in cons:
-        # con.connectionString = database.decreypttxt(con.connectionString)
     return render_template("home.html",companies = companies )
-    # return render_template("ConnectionGrid.html",conlist=cons)
 
 # db.init_app(app)
 
