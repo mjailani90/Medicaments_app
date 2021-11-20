@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block title %}Home Page{% endblock %} {% block
-content %} <br /><br />
+content %} <br />
 <div class="container">
   <h3>Items</h3>
   <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -56,106 +56,24 @@ content %} <br /><br />
 
   <h3>Companies</h3>
   <div class="row row-cols-1 row-cols-md-3 g-4">
-    <div class="col">
-      <div class="card h-55">
-        <img
-          src="/static/companies/beatswell.jpg"
-          class="card-img-top"
-          alt="..."
-          height="150"
-          width="150"
-        />
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-        </div>
-      </div>
-    </div>
+    {% for rw in companies %}
     <div class="col">
       <a href="#">
         <div class="card h-55">
           <img
-            src="/static/companies/beatswell.jpg"
+            src="/static/companies/{{rw.CompanyLogo}}"
             class="card-img-top"
             alt="..."
             height="150"
-            width="150"
+            width="100"
           />
           <div class="card-body">
-            <h5 class="card-title">Card title</h5>
+            <h5 class="card-title">{{ rw.CompanyName }}</h5>
           </div>
         </div>
       </a>
     </div>
-    <div class="col">
-      <div class="card h-55">
-        <img
-          src="/static/companies/beatswell.jpg"
-          class="card-img-top"
-          alt="..."
-          height="150"
-          width="150"
-        />
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card h-55">
-        <img
-          src="/static/companies/beatswell.jpg"
-          class="card-img-top"
-          alt="..."
-          height="150"
-          width="150"
-        />
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card h-55">
-        <img
-          src="/static/companies/beatswell.jpg"
-          class="card-img-top"
-          alt="..."
-          height="150"
-          width="150"
-        />
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card h-55">
-        <img
-          src="/static/companies/beatswell.jpg"
-          class="card-img-top"
-          alt="..."
-          height="150"
-          width="150"
-        />
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card h-55">
-        <img
-          src="/static/companies/beatswell.jpg"
-          class="card-img-top"
-          alt="..."
-          height="150"
-          width="150"
-        />
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-        </div>
-      </div>
-    </div>
+    {% endfor %}
   </div>
 </div>
 <br /><br />

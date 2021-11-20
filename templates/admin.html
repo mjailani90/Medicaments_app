@@ -1,0 +1,92 @@
+{% extends "base.html" %} {% block title %}Home Page{% endblock %} {% block
+content %} <br /><br />
+
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <button
+      class="nav-link active"
+      id="nav-home-tab"
+      data-bs-toggle="tab"
+      data-bs-target="#nav-home"
+      type="button"
+      role="tab"
+      aria-controls="nav-home"
+      aria-selected="true"
+    >
+      Companies
+    </button>
+    <button
+      class="nav-link"
+      id="nav-profile-tab"
+      data-bs-toggle="tab"
+      data-bs-target="#nav-profile"
+      type="button"
+      role="tab"
+      aria-controls="nav-profile"
+      aria-selected="false"
+    >
+      Items
+    </button>
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+  <div
+    class="tab-pane fade show active"
+    id="nav-home"
+    role="tabpanel"
+    aria-labelledby="nav-home-tab"
+  >
+    <div>
+      <br />
+
+      <a href="/admin/?company=" class="btn btn-outline-primary btn-sm"
+        >New Company</a
+      >
+      <br />
+      <br />
+      <div class="table table-sm">
+        <table class="table table-hover table-sm">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Company logo</th>
+              <th scope="col">Company Name</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for rw in compaies %}
+            <tr>
+              <th scope="row">{{ rw['id'] }}</th>
+              <td>
+                <img
+                  width="55"
+                  height="55"
+                  src="/static/companies/{{ rw['CompanyLogo'] }}"
+                />
+              </td>
+              <td>{{ rw['CompanyName'] }}</td>
+              <td>
+                <a
+                  href="/admin/?company={{ rw['id'] }}"
+                  class="btn btn-outline-primary btn-sm"
+                  >Edit</a
+                >
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div
+    class="tab-pane fade"
+    id="nav-profile"
+    role="tabpanel"
+    aria-labelledby="nav-profile-tab"
+  >
+    ...
+  </div>
+</div>
+{% endblock %}

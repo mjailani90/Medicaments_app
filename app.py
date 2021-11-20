@@ -1,8 +1,13 @@
 from operator import imod
-from flask import Flask, render_template
+import re
+from flask import Flask, render_template,request,redirect,url_for
 from flask_sqlalchemy import *
-from sqlalchemy.orm import sessionmaker, relationship
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy.engine import create_engine
+from sqlalchemy.orm import session, sessionmaker, relationship
+from sqlalchemy import Column, Integer, ForeignKey,text
+from sqlalchemy.sql import func
+from sqlalchemy.sql.elements import Null
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
@@ -16,13 +21,15 @@ class company(db.Model):
     __tablename__ = "company"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     CompanyName = db.Column(db.String())
+    CompanyLogo = db.Column(db.String())
 
-    def __init__(self,CompanyName) -> None:
+    def __init__(self,CompanyName,CompanyLogo) -> None:
         self.CompanyName = CompanyName
+        self.CompanyLogo = CompanyLogo
         
  
     def __repr__(self):
-        return f"company('{self.id}','{self.CompanyName}')"
+        return f"company('{self.id}','{self.CompanyName}','{self.CompanyLogo}')"
 
 class Item(db.Model):
     __tablename__ = "Item"
@@ -35,7 +42,6 @@ class Item(db.Model):
     ItemDose = db.Column(db.String(),nullable=True)
     ItemPrice = db.Column(db.Float(),nullable=True)
     ItemCompetitor = db.Column(db.String(),nullable=True)
-    Company = relationship("company", back_populates="Item")
 
     def __init__(self,ItemName,ItemPhoto,ItemDesc,ItemIngredient,ItemUse,ItemDose,ItemPrice,ItemCompetitor,Company) -> None:
         self.ItemName = ItemName
@@ -48,9 +54,30 @@ class Item(db.Model):
         self.ItemCompetitor = ItemCompetitor
         self.Company = Company
         
- 
     def __repr__(self):
         return f"company('{self.id}','{self.ItemName}','{self.ItemPhoto}','{self.ItemDesc}','{self.ItemIngredient}','{self.ItemUse}','{self.ItemDose}','{self.ItemPrice}','{self.ItemCompetitor}','{self.Company}')"
+
+
+
+class User(db.Model):
+    __tablename__ = "User"
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(80), nullable=False)
+
+    def __init__(self,username,password) -> None:
+        self.username = username
+        self.password = password
+        
+ 
+    def __repr__(self):
+        return f"company('{self.id}','{self.username}','{self.password}')"
+
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
+def allowed_file(filename):
+	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.before_first_request
 def create_table():
@@ -59,11 +86,13 @@ def create_table():
 
 @app.route('/',methods=['GET','POST'])
 def main():
-    # cons = database.dbconnection.query.all()
+    sql = text('SELECT * FROM  company ORDER BY random() LIMIT 6;')
+    companies = db.engine.execute(sql)
+
     # print(cons[0].connectionString)
     # for con in cons:
         # con.connectionString = database.decreypttxt(con.connectionString)
-    return render_template("home.html")
+    return render_template("home.html",companies = companies )
     # return render_template("ConnectionGrid.html",conlist=cons)
 
 # db.init_app(app)
@@ -80,7 +109,48 @@ def allcompany():
 
 @app.route('/admin/')
 def admin():
-    pass
+    args = request.args
+    if 'company' in args:
+        comp = db.session.query(company).filter_by(id=args['company']).first()
+        return render_template('editCompany.html',comp= comp)
+    elif 'item' in args:
+        pass
+    else:
+        comps = company.query.all()
+        return render_template('admin.html',compaies=comps)
+
+
+@app.route('/admin/company', methods=['POST'])
+def addCompany():
+    frm = request.form
+    file = request.files['companyphoto']
+    if 'companyphoto' not in request.files:
+        companyphoto = Null
+    else:
+        file = request.files['companyphoto']
+    
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join('static/companies/', filename))
+    
+    if frm['CompanyID']:
+        if filename=='':
+            db.session.query(company).filter_by(id=frm['CompanyID']).update({company.CompanyName:frm['Companynametxt']})
+        else:
+            db.session.query(company).filter_by(id=frm['CompanyID']).update({company.CompanyName:frm['Companynametxt'],company.CompanyLogo:filename})
+        db.session.commit()
+    else:
+        comp = company(frm['Companynametxt'],filename)
+        db.session.add(comp)
+        db.session.commit()
+
+    return redirect(url_for("admin"))
+
+
+@app.route('/login/')
+def login():
+    
+    return render_template('login.html')
 
 
 
