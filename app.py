@@ -1,12 +1,6 @@
-from operator import imod
-import re
 from flask import Flask, render_template,request,redirect,url_for
 from flask_sqlalchemy import *
-from sqlalchemy.engine import create_engine
-from sqlalchemy.orm import session, sessionmaker, relationship
-from sqlalchemy import Column, Integer, ForeignKey,text
-from sqlalchemy.sql import func
-from sqlalchemy.sql.elements import Null
+from sqlalchemy import text
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -116,26 +110,27 @@ def admin():
 
 
 @app.route('/admin/company', methods=['POST'])
+
 def addCompany():
     frm = request.form
-    file = request.files['companyphoto']
+    photofilename=''
     if 'companyphoto' not in request.files:
-        companyphoto = Null
+        companyphoto = ''
     else:
         file = request.files['companyphoto']
     
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join('static/companies/', filename))
+        photofilename = secure_filename(file.filename)
+        file.save(os.path.join('static/companies/', photofilename))
     
     if frm['CompanyID']:
-        if filename=='':
+        if photofilename=='':
             db.session.query(company).filter_by(id=frm['CompanyID']).update({company.CompanyName:frm['Companynametxt']})
         else:
-            db.session.query(company).filter_by(id=frm['CompanyID']).update({company.CompanyName:frm['Companynametxt'],company.CompanyLogo:filename})
+            db.session.query(company).filter_by(id=frm['CompanyID']).update({company.CompanyName:frm['Companynametxt'],company.CompanyLogo:photofilename})
         db.session.commit()
     else:
-        comp = company(frm['Companynametxt'],filename)
+        comp = company(frm['Companynametxt'],photofilename)
         db.session.add(comp)
         db.session.commit()
 
