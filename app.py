@@ -51,8 +51,6 @@ class Item(db.Model):
     def __repr__(self):
         return f"company('{self.id}','{self.ItemName}','{self.ItemPhoto}','{self.ItemDesc}','{self.ItemIngredient}','{self.ItemUse}','{self.ItemDose}','{self.ItemPrice}','{self.ItemCompetitor}','{self.Company}')"
 
-
-
 class User(db.Model):
     __tablename__ = "User"
     id = db.Column(db.Integer, primary_key=True)
@@ -82,7 +80,7 @@ def create_table():
 def main():
     sql = text('SELECT * FROM  company ORDER BY random() LIMIT 6;')
     companies = db.engine.execute(sql)
-    return render_template("home.html",companies = companies )
+    return render_template("home.html",companies = companies)
 
 # db.init_app(app)
 
@@ -93,7 +91,12 @@ def item():
 
 @app.route('/company/')
 def allcompany():
-    pass
+    args = request.args
+    if 'id' in args:
+        return 'one company'
+    else:
+        data = company.query.all()
+        return render_template("companies.html",data=data)
 
 
 @app.route('/admin/')
