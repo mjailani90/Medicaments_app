@@ -1,6 +1,8 @@
+import re
 from flask import Flask, render_template,request,redirect,url_for
 from flask_sqlalchemy import *
 from sqlalchemy import text
+from sqlalchemy.orm import backref
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -16,6 +18,7 @@ class company(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     CompanyName = db.Column(db.String())
     CompanyLogo = db.Column(db.String())
+    Items = db.relationship('Item',backref='owner')
 
     def __init__(self,CompanyName,CompanyLogo) -> None:
         self.CompanyName = CompanyName
@@ -36,8 +39,9 @@ class Item(db.Model):
     ItemDose = db.Column(db.String(),nullable=True)
     ItemPrice = db.Column(db.Float(),nullable=True)
     ItemCompetitor = db.Column(db.String(),nullable=True)
+    CompanyID = db.Column(db.Integer,db.ForeignKey('company.id'))
 
-    def __init__(self,ItemName,ItemPhoto,ItemDesc,ItemIngredient,ItemUse,ItemDose,ItemPrice,ItemCompetitor,Company) -> None:
+    def __init__(self,ItemName,ItemPhoto,ItemDesc,ItemIngredient,ItemUse,ItemDose,ItemPrice,ItemCompetitor,CompanyID) -> None:
         self.ItemName = ItemName
         self.ItemPhoto = ItemPhoto
         self.ItemDesc = ItemDesc
@@ -46,10 +50,10 @@ class Item(db.Model):
         self.ItemDose = ItemDose
         self.ItemPrice = ItemPrice
         self.ItemCompetitor = ItemCompetitor
-        self.Company = Company
+        self.CompanyID = CompanyID
         
     def __repr__(self):
-        return f"company('{self.id}','{self.ItemName}','{self.ItemPhoto}','{self.ItemDesc}','{self.ItemIngredient}','{self.ItemUse}','{self.ItemDose}','{self.ItemPrice}','{self.ItemCompetitor}','{self.Company}')"
+        return f"company('{self.id}','{self.ItemName}','{self.ItemPhoto}','{self.ItemDesc}','{self.ItemIngredient}','{self.ItemUse}','{self.ItemDose}','{self.ItemPrice}','{self.ItemCompetitor}','{self.CompanyID}')"
 
 class User(db.Model):
     __tablename__ = "User"
@@ -78,11 +82,17 @@ def create_table():
 
 @app.route('/',methods=['GET','POST'])
 def main():
-    sql = text('SELECT * FROM  company ORDER BY random() LIMIT 6;')
-    companies = db.engine.execute(sql)
-    return render_template("home.html",companies = companies)
+    if request.method=='GET':
+        sql = text('SELECT * FROM  company ORDER BY random() LIMIT 6;')
+        companies = db.engine.execute(sql)
+        return render_template("home.html",companies = companies)
+    else:
+        txtSearch = request.form.get('txtSearch')
+        if txtSearch=='admin':
+            return redirect("/admin/", code=302)
+        else:
+            return render_template('edititem.html')
 
-# db.init_app(app)
 
 @app.route('/item/')
 def item():
@@ -106,14 +116,15 @@ def admin():
         comp = db.session.query(company).filter_by(id=args['company']).first()
         return render_template('editCompany.html',comp= comp)
     elif 'item' in args:
-        pass
+        item = db.session.query(Item).filter_by(id=args['item']).first()
+        return render_template('edititem.html',Items= item)
     else:
         comps = company.query.all()
-        return render_template('admin.html',compaies=comps)
+        item = Item.query.all()
+        return render_template('admin.html',compaies=comps,Items=item)
 
 
 @app.route('/admin/company', methods=['POST'])
-
 def addCompany():
     frm = request.form
     photofilename=''
@@ -142,10 +153,7 @@ def addCompany():
 
 @app.route('/login/')
 def login():
-    
     return render_template('login.html')
-
-
 
 
 if __name__ == "__main__":

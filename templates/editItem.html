@@ -1,0 +1,105 @@
+{% extends "base.html" %} {% block title %}Home Page{% endblock %} {% block
+content %} <br /><br />
+
+<div class="container-sm">
+  <form
+    id="addCompany"
+    action="/admin/item"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    <div class="mb-3">
+      <label for="itemName" class="form-label">Item Name</label>
+      <input
+        type="text"
+        class="form-control"
+        name="itemName"
+        value="{{ Items.ItemName }}"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="itemDescription" class="form-label">Item Description</label>
+      <input
+        type="text"
+        class="form-control"
+        name="itemDescription"
+        value="{{ Items.ItemDesc }}"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="itemIngredient" class="form-label">Item Ingredient</label>
+      <textarea
+        type="text"
+        class="form-control"
+        name="itemIngredient"
+        value="{{ Items.ItemIngredient }}"
+      ></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="itemUse" class="form-label">Item Use</label>
+      <input
+        type="text"
+        class="form-control"
+        name="itemUse"
+        value="{{ Items.itemUse }}"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="itemDose" class="form-label">Item Dose</label>
+      <input
+        type="text"
+        class="form-control"
+        name="itemDose"
+        value="{{ Items.itemDose }}"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="itemPrice" class="form-label">Item Price</label>
+      <input
+        type="text"
+        class="form-control"
+        name="itemPrice"
+        value="{{ Items.itemPrice }}"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="itemCompetitor" class="form-label">Item Competitor</label>
+      <input
+        type="text"
+        class="form-control"
+        name="itemCompetitor"
+        value="{{ Items.itemCompetitor }}"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="formFile" class="form-label">Item Photo</label>
+      <input
+        class="form-control"
+        name="companyphoto"
+        type="file"
+        id="formFile"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="formFile" class="form-label">Company Name</label>
+      <select
+        name="CompanyName"
+        id="CompanyName"
+        class="form-select"
+        aria-label="Default select example"
+      >
+        <option selected>....</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+      </select>
+    </div>
+    <input type="hidden" name="ItemID" value="{{ Items.id }}" />
+    <br />
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="/admin/" class="btn btn-secondary">Back</a>
+    <br /><br /><br />
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </form>
+</div>
+{% endblock %}

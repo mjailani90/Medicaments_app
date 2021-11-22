@@ -58,20 +58,24 @@ content %} <br />
   <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for rw in companies %}
     <div class="col">
-      <a href="#">
-        <div class="card h-55">
+      <div class="card h-55">
+        <a href="#">
           <img
             src="/static/companies/{{rw.CompanyLogo}}"
             class="card-img-top"
             alt="..."
-            height="150"
-            width="100"
+            style="
+              max-width: 250px;
+              max-height: 250px;
+              width: auto;
+              height: auto;
+            "
           />
-          <div class="card-body">
-            <h5 class="card-title">{{ rw.CompanyName }}</h5>
-          </div>
+        </a>
+        <div class="card-body">
+          <h5 class="card-title">{{ rw.CompanyName }}</h5>
         </div>
-      </a>
+      </div>
     </div>
     {% endfor %}
   </div>
