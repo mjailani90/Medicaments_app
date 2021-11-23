@@ -14,7 +14,7 @@ content %} <br /><br />
         type="text"
         class="form-control"
         name="itemName"
-        value="{{ Items.ItemName }}"
+        value="{{ ItemInfo.ItemName }}"
       />
     </div>
     <div class="mb-3">
@@ -23,17 +23,14 @@ content %} <br /><br />
         type="text"
         class="form-control"
         name="itemDescription"
-        value="{{ Items.ItemDesc }}"
+        value="{{ ItemInfo.ItemDesc }}"
       />
     </div>
     <div class="mb-3">
       <label for="itemIngredient" class="form-label">Item Ingredient</label>
-      <textarea
-        type="text"
-        class="form-control"
-        name="itemIngredient"
-        value="{{ Items.ItemIngredient }}"
-      ></textarea>
+      <textarea type="text" class="form-control" name="itemIngredient">
+{{ ItemInfo.ItemIngredient }}</textarea
+      >
     </div>
     <div class="mb-3">
       <label for="itemUse" class="form-label">Item Use</label>
@@ -41,7 +38,7 @@ content %} <br /><br />
         type="text"
         class="form-control"
         name="itemUse"
-        value="{{ Items.itemUse }}"
+        value="{{ ItemInfo.ItemUse }}"
       />
     </div>
     <div class="mb-3">
@@ -50,16 +47,16 @@ content %} <br /><br />
         type="text"
         class="form-control"
         name="itemDose"
-        value="{{ Items.itemDose }}"
+        value="{{ ItemInfo.ItemDose }}"
       />
     </div>
     <div class="mb-3">
       <label for="itemPrice" class="form-label">Item Price</label>
       <input
-        type="text"
+        type="number"
         class="form-control"
         name="itemPrice"
-        value="{{ Items.itemPrice }}"
+        value="{{ ItemInfo.ItemPrice }}"
       />
     </div>
     <div class="mb-3">
@@ -68,20 +65,15 @@ content %} <br /><br />
         type="text"
         class="form-control"
         name="itemCompetitor"
-        value="{{ Items.itemCompetitor }}"
+        value="{{ ItemInfo.ItemCompetitor }}"
       />
     </div>
     <div class="mb-3">
-      <label for="formFile" class="form-label">Item Photo</label>
-      <input
-        class="form-control"
-        name="companyphoto"
-        type="file"
-        id="formFile"
-      />
+      <label for="ItemPhoto" class="form-label">Item Photo</label>
+      <input class="form-control" name="ItemPhoto" type="file" id="ItemPhoto" />
     </div>
     <div class="mb-3">
-      <label for="formFile" class="form-label">Company Name</label>
+      <label for="CompanyName" class="form-label">Company Name</label>
       <select
         name="CompanyName"
         id="CompanyName"
@@ -89,12 +81,12 @@ content %} <br /><br />
         aria-label="Default select example"
       >
         <option selected>....</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
+        {% for rw in companies%}
+        <option value="{{rw.id}}">{{rw.CompanyName}}</option>
+        {% endfor %}
       </select>
     </div>
-    <input type="hidden" name="ItemID" value="{{ Items.id }}" />
+    <input type="hidden" name="ItemID" value="{{ ItemInfo.id }}" />
     <br />
     <button type="submit" class="btn btn-primary">Save</button>
     <a href="/admin/" class="btn btn-secondary">Back</a>

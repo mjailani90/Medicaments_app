@@ -116,8 +116,10 @@ def admin():
         comp = db.session.query(company).filter_by(id=args['company']).first()
         return render_template('editCompany.html',comp= comp)
     elif 'item' in args:
-        item = db.session.query(Item).filter_by(id=args['item']).first()
-        return render_template('edititem.html',Items= item)
+        ItemInfo = db.session.query(Item).filter_by(id=args['item']).first()
+        print(ItemInfo)
+        companies = company.query.all()
+        return render_template('edititem.html',ItemInfo= ItemInfo,companies=companies)
     else:
         comps = company.query.all()
         item = Item.query.all()
@@ -151,10 +153,45 @@ def addCompany():
     return redirect(url_for("admin"))
 
 
+@app.route('/admin/item', methods=['POST'])
+def addItem():
+    frm = request.form
+    photofilename=''
+    if 'ItemPhoto' not in request.files:
+        Itemphoto = ''
+    else:
+        file = request.files['ItemPhoto']
+    
+    if file and allowed_file(file.filename):
+        photofilename = secure_filename(file.filename)
+        file.save(os.path.join('static/Items/', photofilename))
+    
+    if frm['ItemID']:
+        if photofilename=='':
+            db.session.query(Item).filter_by(id=frm['ItemID']).update({Item.ItemName:frm['itemName'],
+            Item.ItemDesc:frm['itemDescription'],Item.ItemIngredient:frm['itemIngredient'],
+            Item.ItemUse:frm['itemUse'],Item.ItemDose:frm['itemDose'],Item.ItemPrice:frm['itemPrice'],
+            Item.ItemCompetitor:frm['itemCompetitor'],Item.CompanyID:frm['CompanyName']})
+        else:
+            db.session.query(Item).filter_by(id=frm['ItemID']).update({Item.ItemName:frm['itemName'],
+            Item.ItemPhoto:photofilename,Item.ItemDesc:frm['itemDescription'],Item.ItemIngredient:frm['itemIngredient'],
+            Item.ItemUse:frm['itemUse'],Item.ItemDose:frm['itemDose'],Item.ItemPrice:frm['itemPrice'],
+            Item.ItemCompetitor:frm['itemCompetitor'],Item.CompanyID:frm['CompanyName']})
+        db.session.commit()
+    else:
+        comp = Item(frm['itemName'],photofilename,frm['itemDescription'],frm['itemIngredient'],frm['itemUse'],frm['itemDose'],
+        frm['itemPrice'],frm['itemCompetitor'],frm['CompanyName'])
+        db.session.add(comp)
+        db.session.commit()
+
+    return redirect(url_for("admin"))
+
+
+
 @app.route('/login/')
 def login():
     return render_template('login.html')
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
