@@ -96,7 +96,7 @@ def main():
 
 @app.route('/item/')
 def item():
-    pass
+    return render_template('Item.html')
 
 
 @app.route('/company/')
