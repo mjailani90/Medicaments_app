@@ -21,6 +21,7 @@
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
     ></script>
+    {% block styleblock %} {% endblock %}
   </head>
   <body>
     <div class="container-lg">
@@ -49,7 +50,7 @@
                 <a class="nav-link" href="/company">Companies</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">All Items</a>
+                <a class="nav-link" href="/Item">All Items</a>
               </li>
             </ul>
             <form class="d-flex" action="/" method="post">
